@@ -8,8 +8,6 @@
 # - self-posting loop
 # - automated interval adjustment based on number of images
 
-
-
 import twitter
 import PythonMagick as pm
 import os
