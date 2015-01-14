@@ -1,0 +1,4 @@
+TODO
+- self-posting loop
+- automated interval adjustment based on number of images
+- history tracking to prevent repeating the same subdir too soon
