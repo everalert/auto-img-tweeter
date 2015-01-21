@@ -30,7 +30,9 @@ image = imagelist[randint(0,len(imagelist)-1)]
 
 # process image
 img=pm.Image(pm.Blob(file(imagedir+'/'+subdir+'/'+image,'rb').read()))
-img.resize('>%sx%s'%(maxd,maxd))
+size = img.size()
+if size.height()>maxd or size.width()>maxd:
+    img.resize('>%sx%s'%(maxd,maxd))
 img.write(imageout)
 
 # post to twitter
