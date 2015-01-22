@@ -7,6 +7,8 @@
 import twitter
 import PythonMagick as pm
 import os
+import math
+import time
 from random import randint
 
 # twitter auth
@@ -20,6 +22,7 @@ message = 'Image created on %s'
 imageout = 'twitteroutput.jpg'
 imagedir = 'C:/IMAGE/PATH'
 maxd = 1280
+logname = 'xiaojingtupian'
 
 # find random image
 subdirlist = [name for name in os.listdir(imagedir) if os.path.isdir(os.path.join(imagedir,name))]
@@ -37,7 +40,12 @@ img.write(imageout)
 
 # post to twitter
 api = twitter.Api(consumer_key=ckey,consumer_secret=csec,access_token_key=akey,access_token_secret=asec)
-api.PostMedia(message%(datestr),imageout)
+post = api.PostMedia(message%(datestr),imageout)
 
 # cleanup
 os.remove(imageout)
+log = open(logname+".log","a")
+log.seek(0,2)
+if log.tell()!=0:
+    log.write("\n")
+log.write("%s  --  https://twitter.com/%s/status/%s  --  %s/%s"%(time.strftime("%Y/%m/%d %H:%M",time.localtime()),post.GetUser().screen_name,post.GetId(),subdir,image))
