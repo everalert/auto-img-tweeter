@@ -22,17 +22,17 @@ message = 'Image created on %s'
 imageout = 'twitteroutput.jpg'
 imagedir = 'C:/IMAGE/PATH'
 maxd = 1280
-logname = 'xiaojingtupian'
+logname = 'logfile'
 
 # find random image
 subdirlist = [name for name in os.listdir(imagedir) if os.path.isdir(os.path.join(imagedir,name))]
 subdir = subdirlist[randint(0,len(subdirlist)-1)]
-datestr = subdir[0:4]+'-'+subdir[4:6]+'-'+subdir[6:8] #assumes dir is a date in YYYYMMDD format
-imagelist = [name for name in os.listdir(imagedir+'/'+subdir) if os.path.isfile(os.path.join(imagedir+'/'+subdir,name))]
+datestr = '%s-%s-%s'%(subdir[0:4],subdir[4:6],subdir[6:8]) #assumes dir is a date in YYYYMMDD format
+imagelist = [name for name in os.listdir('%s/%s'%(imagedir,subdir)) if os.path.isfile(os.path.join('%s/%s'%(imagedir,subdir),name))]
 image = imagelist[randint(0,len(imagelist)-1)]
 
 # process image
-img=pm.Image(pm.Blob(file(imagedir+'/'+subdir+'/'+image,'rb').read()))
+img=pm.Image(pm.Blob(file('%s/%s/%s'%(imagedir,subdir,image),'rb').read()))
 size = img.size()
 if size.height()>maxd or size.width()>maxd:
     img.resize('>%sx%s'%(maxd,maxd))
@@ -42,10 +42,10 @@ img.write(imageout)
 api = twitter.Api(consumer_key=ckey,consumer_secret=csec,access_token_key=akey,access_token_secret=asec)
 post = api.PostMedia(message%(datestr),imageout)
 
-# cleanup
+# cleanup/log
 os.remove(imageout)
-log = open(logname+".log","a")
+log = open(logname+'.log','a')
 log.seek(0,2)
 if log.tell()!=0:
-    log.write("\n")
-log.write("%s  --  https://twitter.com/%s/status/%s  --  %s/%s"%(time.strftime("%Y/%m/%d %H:%M",time.localtime()),post.GetUser().screen_name,post.GetId(),subdir,image))
+    log.write('\n')
+log.write('%s  --  https://twitter.com/%s/status/%s  --  %s/%s'%(time.strftime('%Y/%m/%d %H:%M',time.localtime()),post.GetUser().screen_name,post.GetId(),subdir,image))
